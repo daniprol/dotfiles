@@ -218,3 +218,12 @@ eval "$(pyenv init -)"
 
 ### DOTFILES MANAGEMENT:
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
+
+# Apparently using a function instead of alias, will get you bash-completion.
+function dotadd {
+	/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME add $@
+}
+
+function dotrm {
+	/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME rm --cached $@
+}
