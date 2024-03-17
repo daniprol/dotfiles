@@ -227,3 +227,27 @@ function dotadd {
 function dotrm {
 	/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME rm --cached $@
 }
+
+export PIP_REQUIRE_VIRTUALENV=true
+# Temporal disable: PIP_REQUIRE_VIRTUALENV="" pip install <package-name>
+gpip() {
+    PIP_REQUIRE_VIRTUALENV="" pip "$@"
+}
+
+# >>> mamba initialize >>>
+# !! Contents within this block are managed by 'mamba init' !!
+export MAMBA_EXE='/home/daniprol/.local/bin/micromamba';
+export MAMBA_ROOT_PREFIX='/home/daniprol/micromamba';
+__mamba_setup="$("$MAMBA_EXE" shell hook --shell bash --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__mamba_setup"
+else
+    alias micromamba="$MAMBA_EXE"  # Fallback on help from mamba activate
+fi
+unset __mamba_setup
+# <<< mamba initialize <<<
+alias mm="micromamba"
+alias conda="micromamba"
+
+# To use with: openapi-python-client generate --path /localpath/to/openapi.json
+source /home/daniprol/.bash_completions/openapi-python-client.sh
