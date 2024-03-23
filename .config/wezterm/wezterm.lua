@@ -20,6 +20,11 @@ config.keys = {
 		mods = "CTRL",
 		action = wezterm.action.ActivateCommandPalette,
 	},
+	-- paste from the clipboard
+	-- WARNING: notice the lowercase "v" here!!
+	{ key = "v", mods = "CTRL", action = wezterm.action.PasteFrom("Clipboard") },
+	-- Primary Selection (middle click) is the quick-copy command available in terminals that can be pasted with shift-inser
+	-- { key = "V", mods = "CTRL", action = wezterm.action.PasteFrom("PrimarySelection") },
 }
 
 -- CREATE NEW LAUNCH OPTIONS

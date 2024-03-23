@@ -116,22 +116,34 @@ export FZF_ALT_C_COMMAND="fd --type d $FD_OPTIONS"
 #export FZF_DEFAULT_OPTS="--no-mouse --height 50% -1 --reverse --multi --inline-info --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always {} || cat {}) 2> /dev/null | head -300' --preview-window='right:hidden:wrap' --bind='f3:execute(bat --style=numbers {} || less -f {}),f2:toggle-preview,ctrl-d:half-page-down,ctrl-u:half-page-up,ctrl-a:select-all+accept,ctrl-y:execute-silent(echo {+} | pbcopy),ctrl-x:execute(rm -i {+})+abort'"
 
 # If lsd is installed use it instead of builtin ls
-# command -v lsd > /dev/null 2>&1 && alias ls='lsd'
+command -v lsd > /dev/null 2>&1 && alias ls='lsd --group-directories-first'
 
 # Alias
-alias ls="lsd --group-directories-first"
-alias ll="lsd -l --group-directories-first"
-alias la="lsd -a --group-directories-first"
-alias lla="lsd -la --group-directories-first"
-alias lt="lsd --tree --group-directories-first"
-alias cat="bat"
-alias av="source venv/bin/activate"
+# alias ls="lsd --group-directories-first" # Cant apply recursion here
+alias la="ls -a"
+alias ll="ls -l" # List only normal files
+alias lla="ls -la" # List hidden files as well
+alias lt="ls --tree"
+
+command -v bat &> /dev/null && alias cat="bat"
+
+function av() {
+	if [ -d "venv" ]; then
+		source venv/bin/activate
+		echo "Activated virtual environment"
+	elif [ -d ".venv" ]; then
+		source .venv/bin/activate
+		echo "Activated virtual environment"
+	else
+		echo "No virtual environment found"
+	fi
+}
 
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
+    # alias ls='ls --color=auto'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
@@ -250,4 +262,4 @@ alias mm="micromamba"
 alias conda="micromamba"
 
 # To use with: openapi-python-client generate --path /localpath/to/openapi.json
-source /home/daniprol/.bash_completions/openapi-python-client.sh
+# source /home/daniprol/.bash_completions/openapi-python-client.sh
