@@ -13,7 +13,8 @@ fi
 export PATH
 
 export EDITOR="nvim"
-export BROWSER="firefox"
+# export BROWSER="firefox"
+export BROWSER="/usr/bin/wslview"
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -85,10 +86,13 @@ unzd() {
 }
 
 # Starship prompt
-eval "$(starship init bash)"
+command -v starship > /dev/null 2>&1 && eval "$(starship init bash)"
 
 # Use bat as default formatter for man pages
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+if command -v bat > /dev/null 2>&1; then
+	export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+fi
+
 export MANROFFOPT="-c"
 
 # Load FZF keybindings (CTRL-T, CTRL-R, ALT-C)
@@ -103,8 +107,8 @@ FD_OPTIONS="--hidden --follow --exclude .git --exclude node_modules --exclude ve
 #PREVIEW_OPTIONS="--preview 'bat --color=always --style=numbers --line-range=:200 {}'"
 
 # IMPORTANT: dont use "bat" in FZF_DEFAULT_OPTS or FZF won't work when searching anything other than files!
-export FZF_DEFAULT_OPTS="--height 50% -1 --layout=reverse-list --multi --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always -style=numbers --line-range=:200 {} || cat {}) 2> /dev/null'"
-#export FZF_DEFAULT_OPTS="--no-mouse --height 50% -1 --reverse --multi --inline-info --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always {} || cat {}) 2> /dev/null | head -300' --preview-window='right:hidden:wrap' --bind='f3:execute(bat --style=numbers {} || less -f {}),f2:toggle-preview,ctrl-d:half-page-down,ctrl-u:half-page-up,ctrl-a:select-all+accept,ctrl-y:execute-silent(echo {+} | pbcopy),ctrl-x:execute(rm -i {+})+abort'"
+export FZF_DEFAULT_OPTS="--height 50% -1 --layout=reverse-list --multi --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (cat --style=numbers --color=always -style=numbers --line-range=:200 {} || cat {}) 2> /dev/null'"
+#export FZF_DEFAULT_OPTS="--no-mouse --height 50% -1 --reverse --multi --inline-info --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (cat --style=numbers --color=always {} || cat {}) 2> /dev/null | head -300' --preview-window='right:hidden:wrap' --bind='f3:execute(cat --style=numbers {} || less -f {}),f2:toggle-preview,ctrl-d:half-page-down,ctrl-u:half-page-up,ctrl-a:select-all+accept,ctrl-y:execute-silent(echo {+} | pbcopy),ctrl-x:execute(rm -i {+})+abort'"
 #
 # Use git-ls-files inside git repo, otherwise fd
 export FZF_DEFAULT_COMMAND="git ls-files --cached --others --exclude-standard || fd --type f --type l $FD_OPTIONS"
@@ -113,18 +117,19 @@ export FZF_ALT_C_COMMAND="fd --type d $FD_OPTIONS"
 
 
 # Configure fzf, command line fuzzyf finder
-#export FZF_DEFAULT_OPTS="--no-mouse --height 50% -1 --reverse --multi --inline-info --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always {} || cat {}) 2> /dev/null | head -300' --preview-window='right:hidden:wrap' --bind='f3:execute(bat --style=numbers {} || less -f {}),f2:toggle-preview,ctrl-d:half-page-down,ctrl-u:half-page-up,ctrl-a:select-all+accept,ctrl-y:execute-silent(echo {+} | pbcopy),ctrl-x:execute(rm -i {+})+abort'"
+#export FZF_DEFAULT_OPTS="--no-mouse --height 50% -1 --reverse --multi --inline-info --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (cat --style=numbers --color=always {} || cat {}) 2> /dev/null | head -300' --preview-window='right:hidden:wrap' --bind='f3:execute(cat --style=numbers {} || less -f {}),f2:toggle-preview,ctrl-d:half-page-down,ctrl-u:half-page-up,ctrl-a:select-all+accept,ctrl-y:execute-silent(echo {+} | pbcopy),ctrl-x:execute(rm -i {+})+abort'"
 
 # If lsd is installed use it instead of builtin ls
-# command -v lsd > /dev/null 2>&1 && alias ls='lsd'
+command -v lsd > /dev/null 2>&1 && alias ls='lsd'
+
+command -v bat > /dev/null 2>&1 && alias cat='bat'
 
 # Alias
-alias ls="lsd --group-directories-first"
-alias ll="lsd -l --group-directories-first"
-alias la="lsd -a --group-directories-first"
-alias lla="lsd -la --group-directories-first"
-alias lt="lsd --tree --group-directories-first"
-alias cat="bat"
+alias ls="ls --group-directories-first"
+alias ll="ls -l --group-directories-first"
+alias la="ls -a --group-directories-first"
+alias lla="ls -la --group-directories-first"
+alias lt="ls --tree --group-directories-first"
 alias av="source venv/bin/activate"
 
 
@@ -184,9 +189,6 @@ ex ()
   fi
 }
 
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
 ## NEOVIM CONFIG SWITCHER
@@ -227,3 +229,49 @@ function dotadd {
 function dotrm {
 	/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME rm --cached $@
 }
+
+
+## Pip wont allow you to install packages globally with this:
+export PIP_REQUIRE_VIRTUALENV=true
+# Alternative: use a $HOME/.pip/pip.conf file with:
+# [global]
+# require-virtualenv = true
+
+# To actually install globally:
+gpip() {
+    PIP_REQUIRE_VIRTUALENV=false pip "$@"
+}
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+eval "$(pyenv virtualenv-init -)"
+
+
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/daniprol/miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/daniprol/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/home/daniprol/miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/daniprol/miniforge3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+
+if [ -f "/home/daniprol/miniforge3/etc/profile.d/mamba.sh" ]; then
+    . "/home/daniprol/miniforge3/etc/profile.d/mamba.sh"
+fi
+# <<< conda initialize <<<
+
+# Remove untagged (<none>) Docker images
+alias docker_rmi_dangling="docker rmi $(docker images -qa -f 'dangling=true')"
+
+. "$HOME/.cargo/env"
