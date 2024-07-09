@@ -94,3 +94,13 @@ bash Miniforge3-$(uname)-$(uname -m).sh
 # Install tmux plugin manager
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 # To install plugins already in .tmux.conf: PREFIX + I
+#
+
+
+# - - - - - - - - - - - - - - - - - - - -  Delta diff
+sudo apt install git-delta
+# or dnf install git-delta
+# Generate shell completions:
+delta --generate-completions bash
+
+

@@ -103,7 +103,7 @@ FD_OPTIONS="--hidden --follow --exclude .git --exclude node_modules --exclude ve
 #PREVIEW_OPTIONS="--preview 'bat --color=always --style=numbers --line-range=:200 {}'"
 
 # IMPORTANT: dont use "bat" in FZF_DEFAULT_OPTS or FZF won't work when searching anything other than files!
-export FZF_DEFAULT_OPTS="--height 50% -1 --layout=reverse-list --multi --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always -style=numbers --line-range=:200 {} || cat {}) 2> /dev/null'"
+export FZF_DEFAULT_OPTS="--height 50% -1 --layout=reverse-list --multi --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always --line-range=:200 {} || cat {}) 2> /dev/null'"
 #export FZF_DEFAULT_OPTS="--no-mouse --height 50% -1 --reverse --multi --inline-info --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always {} || cat {}) 2> /dev/null | head -300' --preview-window='right:hidden:wrap' --bind='f3:execute(bat --style=numbers {} || less -f {}),f2:toggle-preview,ctrl-d:half-page-down,ctrl-u:half-page-up,ctrl-a:select-all+accept,ctrl-y:execute-silent(echo {+} | pbcopy),ctrl-x:execute(rm -i {+})+abort'"
 #
 # Use git-ls-files inside git repo, otherwise fd
@@ -125,7 +125,7 @@ alias ll="ls -l" # List only normal files
 alias lla="ls -la" # List hidden files as well
 alias lt="ls --tree"
 
-command -v bat &> /dev/null && alias cat="bat"
+command -v bat &> /dev/null && alias cat="bat --style=numbers"
 
 function av() {
 	if [ -d "venv" ]; then
@@ -263,3 +263,4 @@ alias conda="micromamba"
 
 # To use with: openapi-python-client generate --path /localpath/to/openapi.json
 # source /home/daniprol/.bash_completions/openapi-python-client.sh
+eval "$(pyenv virtualenv-init -)"
