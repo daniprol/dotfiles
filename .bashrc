@@ -61,6 +61,10 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# Check if it is a login or non-login shell
+# shopt -q login_shell && echo 'Login shell' || echo 'Not login shell'
+
+
 
 # Plots with GNUPLOT
 # Example use: >> iplot 'sin(x*3)*exp(x*.2)'
@@ -175,20 +179,20 @@ ex ()
 {
   if [ -f "$1" ] ; then
     case $1 in
-      *.tar.bz2)   tar xjf $1   ;;
-      *.tar.gz)    tar xzf $1   ;;
-      *.bz2)       bunzip2 $1   ;;
-      *.rar)       unrar x $1   ;;
-      *.gz)        gunzip $1    ;;
-      *.tar)       tar xf $1    ;;
-      *.tbz2)      tar xjf $1   ;;
-      *.tgz)       tar xzf $1   ;;
-      *.zip)       unzip $1     ;;
-      *.Z)         uncompress $1;;
-      *.7z)        7z x $1      ;;
-      *.deb)       ar x $1      ;;
-      *.tar.xz)    tar xf $1    ;;
-      *.tar.zst)   unzstd $1    ;;
+      *.tar.bz2)   tar xjf "$1"   ;;
+      *.tar.gz)    tar xzf "$1"   ;;
+      *.bz2)       bunzip2 "$1"   ;;
+      *.rar)       unrar x "$1"   ;;
+      *.gz)        gunzip "$1"    ;;
+      *.tar)       tar xf "$1"    ;;
+      *.tbz2)      tar xjf "$1"   ;;
+      *.tgz)       tar xzf "$1"   ;;
+      *.zip)       unzip "$1"     ;;
+      *.Z)         uncompress "$1";;
+      *.7z)        7z x "$1"      ;;
+      *.deb)       ar x "$1"      ;;
+      *.tar.xz)    tar xf "$1"    ;;
+      *.tar.zst)   unzstd "$1"    ;;
       *)           echo "'$1' cannot be extracted via ex()" ;;
     esac
   else
@@ -221,6 +225,9 @@ function nvims() {
 }
 
 # bind -x '"\C-a":"nvims"'
+source ~/Scripts/tmux-sessionizer.sh
+# bind -s ^f "tmux-sessionizer\n"
+bind -x '"\C-a":"tmux-sessionizer"'
 
 ## PYENV
 export PYENV_ROOT="$HOME/.pyenv"
