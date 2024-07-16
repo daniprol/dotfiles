@@ -108,7 +108,7 @@ function nvims() {
 }
 
 # bind -x '"\C-a":"nvims"'
-source ~/Scripts/tmux-sessionizer.sh
+# source ~/Scripts/tmux-sessionizer.sh
 # bind -s ^f "tmux-sessionizer\n"
 bind -x '"\C-a":"tmux-sessionizer"'
 
