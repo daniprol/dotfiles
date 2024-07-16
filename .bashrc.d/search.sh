@@ -10,13 +10,12 @@ function f() {
 
   local directories=("node_modules" "venv" ".venv" "envs" "pkgs" ".git")
 
-  local search_path="$HOME"
 
   local ignore_file="$HOME/.ignore"
   if [[ -f "$ignore_file" ]]; then
     # NOTE: to specify a different directory ($search_path) we need to pass a wildcard "."
     # NOTE: notice the -u --unrestricted (== -HI )
-    local fd_command="fd -u -t f  --ignore-file $ignore_file . $search_path"
+    local fd_command="fd -u -t f --ignore-file $ignore_file . $HOME"
   else
     local directories=("node_modules" "venv" ".venv" "envs" "pkgs" ".git")
     local exclude=""
@@ -25,7 +24,7 @@ function f() {
       exclude+="--exclude $directory"
     done
 
-    local fd_command="fd -u -t f $exclude . $search_path"
+    local fd_command="fd -u -t f $exclude . $HOME"
   fi
 
     
@@ -36,7 +35,17 @@ function f() {
   local files 
   # NOTE: -m for multiselect should be the default
   # NOTE: we are using an array!
-  files=($($fd_command |  fzf -m ))
+
+  # NOTE: modify IFS to split by newline instead of space
+  # IFS=$'\n'
+  # files=($(fd . --type f --type l "${@:2}" | fzf -0 -1 -m))
+  # List of files separated by newline
+  picked_files=$($fd_command |  fzf -m )
+
+  IFS=$'\n'
+  # List of files separated by space
+  files=($picked_files)
+  IFS=$' '
 
   # Check string is non-empty
   [[ -n "$files" ]] && $EDITOR "${files[@]}" || return 1
