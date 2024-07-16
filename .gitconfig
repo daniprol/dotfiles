@@ -4,7 +4,14 @@
 	email = prolcambados@gmail.com
 	name = Dani Prol
 
+; [pull]
+; 	rebase = true
+
+[fetch]
+    prune = true
+
 [core]
+    ; editor = nvim # IT SHOULD USE $EDITOR ENV VAR ALREADY
     pager = delta
 
 [interactive]
@@ -16,8 +23,35 @@
     line-numbers = true
     side-by-side = true
 
-[merge]
-    conflictstyle = diff3
 
 [diff]
     colorMoved = default
+
+; IMPORTANT: to retrieve file during merge with marks use: git checkout --conflict=diff3 {file}
+[merge]
+    ; tool = fugitive
+    tool = gitconflict
+    ; tool = nvimdiff
+    conflictstyle = diff3
+
+[mergetool]
+    prompt = false
+    keepBackup = false
+    hideResolved = true
+
+
+[mergetool "fugitive"]
+  ; cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
+  ; cmd = nvim -f -c \"Gvdiffsplit\" \"$LOCAL\" \"$MERGED\"
+  ; -d to open in diff mode
+  ; -c to run commands
+    ; cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+
+; [mergetool "nvim"]
+;     layout = LOCAL,MERGED,REMOTE
+    ; cmd = nvim-mergetool $LOCAL $REMOTE $MERGED
+
+[mergetool "gitconflict"]
+    cmd = nvim \"$MERGED\"
+
+
